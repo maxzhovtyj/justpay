@@ -1,2 +1,2 @@
 httpServerListenAddr: ":6666"
-dbSourceName: "postgres://postgres:1111@localhost:5433/"
+dbSourceName: "postgres://postgres:1111@postgres:5432/"

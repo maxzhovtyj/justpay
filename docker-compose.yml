@@ -1,19 +1,18 @@
-FROM golang:1.22.5-alpine3.20 AS builder
+version: '3.9'
 
-RUN go version
-ENV GOPATH=/
-
-COPY . /github.com/maxzhovtyj/justpay/
-WORKDIR /github.com/maxzhovtyj/justpay/
-
-RUN go mod download
-RUN GOOS=linux go build -o ./.bin/justpay-linux-amd64 ./cmd/justpay/main.go
-
-FROM alpine:latest
-
-WORKDIR /root/
-
-COPY --from=0 github.com/maxzhovtyj/justpay/.bin/justpay-linux-amd64 .
-COPY --from=0 github.com/maxzhovtyj/justpay/configs/config.yml config/
-
-CMD ["./justpay-linux-amd64", "-config=./configs/config.yml"]
+services:
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5433:5432"
+    volumes:
+      - ~/apps/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=1111
+  justpay:
+    build:
+      context: . # Use an image built from the specified dockerfile in the current directory.
+      dockerfile: Dockerfile
+    ports:
+        - "6667:6666"
+    restart: unless-stopped

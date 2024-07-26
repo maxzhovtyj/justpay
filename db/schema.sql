@@ -1,11 +1,11 @@
-CREATE TABLE users
+CREATE TABLE IF NOT EXISTS users
 (
     id         uuid PRIMARY KEY,
     created_at timestamptz,
     updated_at timestamptz
 );
 
-CREATE TABLE orders
+CREATE TABLE IF NOT EXISTS orders
 (
     id         UUID PRIMARY KEY,
     user_id    UUID REFERENCES users (id),
@@ -15,7 +15,7 @@ CREATE TABLE orders
     updated_at timestamptz
 );
 
-CREATE TABLE events
+CREATE TABLE IF NOT EXISTS events
 (
     id         uuid PRIMARY KEY,
     order_id   UUID REFERENCES orders (id),

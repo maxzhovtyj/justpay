@@ -7,8 +7,9 @@ import (
 )
 
 var (
-	ErrEventAlreadyExists  = errors.New("event already exists")
-	ErrFinalStatusReceived = errors.New("final status received")
+	ErrEventAlreadyExists    = errors.New("event already exists")
+	ErrFinalStatusReceived   = errors.New("final status received")
+	ErrInvalidStatusSequence = errors.New("invalid status sequence")
 )
 
 // "cool_order_created|confirmed_by_mayor|sbu_verification_pending|changed_my_mind|failed|give_my_money_back|chinazes",
@@ -17,8 +18,8 @@ type Status int
 
 const (
 	CoolOrderCreatedStatus       Status = 0
-	ConfirmedByMayorStatus              = 1
-	SBUVerificationPendingStatus        = 2
+	SBUVerificationPendingStatus        = 1
+	ConfirmedByMayorStatus              = 2
 	ChangedMyMindStatus                 = 3
 	FailedStatus                        = 4
 	GiveMyMoneyBackStatus               = 5

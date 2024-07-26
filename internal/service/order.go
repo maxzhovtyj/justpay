@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"github.com/google/uuid"
 	"justpay/internal/domain/order"
 	"justpay/internal/storage"
@@ -45,7 +46,36 @@ func (s *OrderService) NewEvent(event order.Event) error {
 		return err
 	}
 
+	err = s.checkEventSequence(o.Status, event.Status)
+	if err != nil {
+		return nil
+	}
+
 	s.NotifySubscribers(event)
+
+	return nil
+}
+
+func (s *OrderService) checkEventSequence(currStatus, eventStatus order.Status) error {
+	if currStatus == eventStatus {
+		return fmt.Errorf("status is not changed")
+	}
+
+	if eventStatus == order.ChangedMyMindStatus || eventStatus == order.FailedStatus {
+		return nil
+	}
+
+	if eventStatus == order.SBUVerificationPendingStatus && currStatus != order.CoolOrderCreatedStatus {
+		return order.ErrInvalidStatusSequence
+	}
+
+	if eventStatus == order.ConfirmedByMayorStatus && currStatus != order.SBUVerificationPendingStatus {
+		return order.ErrInvalidStatusSequence
+	}
+
+	if eventStatus == order.ChinazezStatus && currStatus != order.ConfirmedByMayorStatus {
+		return order.ErrInvalidStatusSequence
+	}
 
 	return nil
 }
