@@ -1,7 +1,8 @@
 package service
 
 import (
-	"justpay/internal/service/order"
+	"github.com/google/uuid"
+	"justpay/internal/domain/order"
 	"justpay/internal/storage"
 )
 
@@ -10,14 +11,15 @@ type Service struct {
 }
 
 type Order interface {
-	Create()
-	NewEvent()
-	Subscribe(orderID string) (*order.Subscriber, error)
-	Unsubscribe()
+	NewEvent(event order.Event) error
+	Subscribe(oid uuid.UUID) (*Subscriber, error)
+	Unsubscribe(orderID, userID uuid.UUID)
+	NotifySubscribers(event order.Event)
+	GetOrders() ([]order.Order, error)
 }
 
 func New(db *storage.Storage) *Service {
 	return &Service{
-		Order: order.New(db),
+		Order: NewOrderService(db),
 	}
 }

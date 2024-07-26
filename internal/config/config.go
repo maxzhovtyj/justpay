@@ -8,6 +8,7 @@ import (
 
 type Config struct {
 	HTTPServerListenAddr string `yaml:"httpServerListenAddr"`
+	DBSourceName         string `yaml:"dbSourceName"`
 }
 
 var (
